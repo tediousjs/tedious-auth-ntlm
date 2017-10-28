@@ -1,0 +1,57 @@
+{
+  "name": "tedious-auth-ntlm",
+  "description": "NTLM Authentication Provider for Tedious",
+  "version": "0.0.0-development",
+  "main": "lib/index.js",
+  "scripts": {
+    "pretest": "eslint . && flow",
+    "test": "mocha test/unit/*-test.js",
+    "test-integration": "mocha test/integration/*-test.js",
+    "prepare": "babel src --out-dir lib && flow-copy-source src lib",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+  },
+  "author": "Arthur Schreiber (schreiber.arthur@gmail.com)",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.0.1",
+    "babel-plugin-syntax-flow": "^6.18.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "eslint": "^4.9.0",
+    "flow-bin": "^0.57.3",
+    "flow-copy-source": "^1.1.0",
+    "flow-typed": "^2.2.0",
+    "mocha": "^4.0.1",
+    "semantic-release": "^8.2.0",
+    "semantic-release-cli": "^3.2.2",
+    "tedious": "file:../tedious"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.26.0",
+    "big-number": "^0.4.0"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": 4
+          }
+        }
+      ],
+      "flow"
+    ],
+    "plugins": [
+      "transform-runtime"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tediousjs/tedious-auth-ntlm.git"
+  }
+}

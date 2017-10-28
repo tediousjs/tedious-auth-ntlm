@@ -1,0 +1,58 @@
+version: "{build}"
+
+environment:
+  matrix:
+    - nodejs_version: "4"
+    - nodejs_version: "6"
+    - nodejs_version: "7"
+    - nodejs_version: "8"
+
+branches:
+  only:
+    - master
+    - /^maint\/.+/
+    - /v\d+\.\d+\.\d+/
+
+install:
+  - ps: Install-Product node $env:nodejs_version
+  - npm install
+
+cache:
+  - node_modules
+
+build: off
+
+test_script:
+  - node --version
+  - npm --version
+
+  - cmd: |
+      SET EXITVAL=0
+
+      npm run-script test || SET EXITVAL=1
+
+      powershell %cd%\scripts\appveyor\config.ps1 SQL2016
+
+      SET TDS_WORKGROUP_SERVER=localhost
+      SET TDS_WORKGROUP_NAME=%UserDomain%
+      SET TDS_WORKGROUP_USER=appveyor
+      FOR /F "usebackq tokens=2,* skip=2" %%L IN (
+          `reg query "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v DefaultPassword`
+      ) DO SET TDS_WORKGROUP_PASSWORD=%%M
+
+      SET TDS_VERSION=7_4
+      npm run-script test-integration || SET EXITVAL=1
+
+      SET TDS_VERSION=7_3_B
+      npm run-script test-integration || SET EXITVAL=1
+
+      SET TDS_VERSION=7_3_A
+      npm run-script test-integration || SET EXITVAL=1
+
+      SET TDS_VERSION=7_2
+      npm run-script test-integration || SET EXITVAL=1
+
+      SET TDS_VERSION=7_1
+      npm run-script test-integration || SET EXITVAL=1
+
+      EXIT /B %EXITVAL%
